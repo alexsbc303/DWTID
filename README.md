@@ -47,9 +47,10 @@ streamlit run app_cleaned.py
 ```
 
 ### First Time Setup
-1. Ensure CSV datasets are in the project root directory
-2. The application will automatically process and cache data on first run
-3. Access the dashboard at `http://localhost`
+1. Download Source file from https://github.com/gayanku/darkweb_clearweb_darktopics (Clearnedup_ALL_7.csv.zip - https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing)
+2. Ensure CSV datasets are in the project root directory
+3. The application will automatically process and cache data on first run
+4. Access the dashboard at `http://localhost`
 
 ## 🔧 Key Features
 
