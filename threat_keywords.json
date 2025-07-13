@@ -1,0 +1,12 @@
+{
+    "malware": ["malware", "virus", "trojan", "worm", "rootkit", "backdoor", "spyware", "adware"],
+    "ransomware": ["ransomware", "encrypt", "decrypt", "ransom", "lockbit", "wannacry"],
+    "rat": ["rat", "remote access", "darkcomet", "njrat", "quasar"],
+    "crypter": ["crypter", "fud", "stub", "encryption", "obfuscation"],
+    "stealer": ["stealer", "password", "cookies", "credentials", "redline", "azorult"],
+    "botnet": ["botnet", "bot", "c2", "command and control", "mirai"],
+    "exploit": ["exploit", "vulnerability", "zero-day", "cve", "rce"],
+    "phishing": ["phishing", "fake", "scam", "social engineering"],
+    "carding": ["carding", "cvv", "bins", "dumps", "cashout"],
+    "crypto": ["bitcoin", "cryptocurrency", "wallet", "mining", "exchange"]
+}

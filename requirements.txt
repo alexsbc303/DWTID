@@ -1,0 +1,16 @@
+streamlit
+pandas
+numpy
+plotly
+scikit-learn
+nltk
+wordcloud
+networkx
+matplotlib
+seaborn
+spacy
+textblob
+chardet
+vaderSentiment
+gensim
+psutil
