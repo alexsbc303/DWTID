@@ -38,8 +38,8 @@ Data Collection → Processing → Analysis → Intelligence → Dissemination
 ### Installation
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd dark-web-threat-intelligence
+git clone https://github.com/alexsbc303/DWTID.git
+cd DWTID
 
 # Install dependencies
 pip install -r requirements.txt
