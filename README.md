@@ -27,11 +27,11 @@ Data Collection → Processing → Analysis → Intelligence → Dissemination
 
 ### Core Components
 
-- **Main Application**: `app_cleaned.py` - Streamlit-based research dashboard
+- **Main Application**: `app.py` - Streamlit-based research dashboard
 - **Threat Detection**: `threat_keywords.json` - Configurable malware taxonomy
 - **Data Sources**: 
   - `dark_market_output_v2.csv` - Dark market listings (80K+ records)
-  - `Clearnedup_ALL_7.csv` - Forum discussions (5.8M+ records)
+  - `Clearnedup_ALL_7.csv` - Forum discussions (5.8M+ records) (Link: https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing)
 
 ## 🚀 Quick Start
 
@@ -49,7 +49,7 @@ streamlit run app_cleaned.py
 ```
 
 ### First Time Setup
-1. Download Source file from https://github.com/gayanku/darkweb_clearweb_darktopics (Clearnedup_ALL_7.csv.zip - https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing)
+1. Download Source .csv files
 2. Ensure CSV datasets are in the project root directory
 3. The application will automatically process and cache data on first run
 4. Access the dashboard at `http://localhost`
@@ -60,7 +60,7 @@ streamlit run app_cleaned.py
 - **Static Keyword Matching**: Configurable threat taxonomy with 10+ categories
 - **Named Entity Recognition**: Advanced pattern recognition for malware identification
 - **Topic Modeling (LDA)**: Unsupervised discovery of discussion themes
-- **Regex Optimization**: Compiled patterns for high-performance text analysis
+- **Regex Optimisation**: Compiled patterns for high-performance text analysis
 
 ### 2. Structured Threat Intelligence Parser
 - **Data Extraction**: Malware names, types, seller identities, pricing
@@ -94,7 +94,7 @@ streamlit run app_cleaned.py
 
 ## 📊 Data Processing Pipeline
 
-### Performance Optimizations
+### Performance Optimisations
 - **Chunked Loading**: Memory-efficient processing of large datasets
 - **Intelligent Caching**: Pickle-based data persistence with TTL
 - **Vectorized Operations**: Pandas and NumPy optimizations
@@ -114,12 +114,12 @@ streamlit run app_cleaned.py
 - **Plotly**: Interactive data visualizations
 - **Scikit-learn**: Machine learning and classification
 - **NLTK**: Natural language processing toolkit
-- **NetworkX**: Network analysis and graph visualization
+- **NetworkX**: Network analysis and graph visualisation
 
 ### Advanced Features
-- **Gensim**: Topic modeling and document similarity
+- **Gensim**: Topic modelling and document similarity
 - **VADER Sentiment**: Lexicon-based sentiment analysis
-- **WordCloud**: Text visualization and keyword highlighting
+- **WordCloud**: Text visualisation and keyword highlighting
 - **Matplotlib/Seaborn**: Statistical plotting and analysis
 
 ## 📈 Performance Characteristics
@@ -137,7 +137,7 @@ streamlit run app_cleaned.py
 - **Price Intelligence**: Economic analysis of cybercrime markets
 - **Seller Profiling**: Activity patterns and reputation analysis
 
-### Visualization Features
+### Visualisation Features
 - **Interactive Charts**: Plotly-based dynamic visualizations
 - **Network Graphs**: Relationship mapping between entities
 - **Word Clouds**: Visual keyword and topic representation
@@ -153,7 +153,7 @@ streamlit run app_cleaned.py
 
 ### Data Privacy
 - No personal information collection or storage
-- Anonymized research data only
+- Anonymised research data only
 - Local processing without external data transmission
 - Compliance with academic research standards
 
@@ -161,11 +161,11 @@ streamlit run app_cleaned.py
 
 ### File Structure
 ```
-├── app_cleaned.py           # Main application (optimized)
+├── app.py                  # Main application
 ├── threat_keywords.json    # Threat taxonomy configuration
 ├── requirements.txt        # Python dependencies
 ├── Task.md                 # Project objectives and requirements
-└── README.md              # This documentation
+└── README.md               # This documentation
 ```
 
 ### Configuration
@@ -201,9 +201,8 @@ Implements established frameworks for:
 - Adjust `CHUNK_SIZE` for memory constraints
 - Modify `MAX_SAMPLE_SIZE` for processing speed
 - Configure `CACHE_TTL` for data freshness requirements
-- Customize visualization limits for responsiveness
+- Customise visualisation limits for responsiveness
 
 For technical issues, feature requests, or academic collaboration:
 - Check requirements.txt for dependency versions
 - Examine threat_keywords.json for threat taxonomy
-- Consult app_cleaned.py for implementation details
