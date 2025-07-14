@@ -2,8 +2,6 @@
 
 A comprehensive cybersecurity research prototype for monitoring and analyzing dark web threats through advanced data analytics and machine learning techniques.
 
-Streamlit Demo Link: https://msp24021dwtid.streamlit.app/
-
 ## 🎯 Project Overview
 
 This academic research project implements a **Dark Web Threat Intelligence Analysis (DWTIA)** framework for defensive cybersecurity research. The system analyzes cybersecurity threats from dark web marketplaces and forums to provide actionable intelligence for security professionals and researchers.
