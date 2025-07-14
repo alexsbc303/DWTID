@@ -43,7 +43,7 @@ cd DWTID
 pip install -r requirements.txt
 
 # Run the application
-streamlit run app_cleaned.py
+streamlit run app.py
 ```
 
 ### First Time Setup
