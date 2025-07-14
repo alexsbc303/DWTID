@@ -28,8 +28,8 @@ Data Collection → Processing → Analysis → Intelligence → Dissemination
 - **Main Application**: `app.py` - Streamlit-based research dashboard
 - **Threat Detection**: `threat_keywords.json` - Configurable malware taxonomy
 - **Data Sources**: 
-  - `dark_market_output_v2.csv` - Dark market listings (80K+ records)
-  - `Clearnedup_ALL_7.csv` - Forum discussions (5.8M+ records) (Link: https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing)
+  - `dark_market_output_v2.csv` - Dark market listings (80K+ records) [in Github repo]
+  - `Clearnedup_ALL_7.csv` - Forum discussions (5.8M+ records) [Link: https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing]
 
 ## 🚀 Quick Start
 
@@ -38,6 +38,8 @@ Data Collection → Processing → Analysis → Intelligence → Dissemination
 # Clone the repository
 git clone https://github.com/alexsbc303/DWTID.git
 cd DWTID
+
+# Download and insert Clearnedup_ALL_7.csv into the project root directory
 
 # Install dependencies
 pip install -r requirements.txt
@@ -153,7 +155,6 @@ streamlit run app.py
 - No personal information collection or storage
 - Anonymised research data only
 - Local processing without external data transmission
-- Compliance with academic research standards
 
 ## 📚 Documentation
 

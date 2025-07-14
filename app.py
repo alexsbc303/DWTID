@@ -31,23 +31,8 @@ except ImportError:
 warnings.filterwarnings('ignore')
 
 # Configuration
-CHUNK_SIZE = 50000
 MAX_SAMPLE_SIZE = 25000
 CACHE_TTL = 3600  # 1 hour
-
-def memory_efficient_read_csv(filepath: str, chunk_size: int = CHUNK_SIZE):
-    """Read CSV in chunks to reduce memory usage."""
-    try:
-        for chunk in pd.read_csv(filepath, 
-                               encoding='latin-1', 
-                               on_bad_lines='skip', 
-                               engine='c',
-                               chunksize=chunk_size,
-                               low_memory=False):
-            yield chunk
-    except Exception as e:
-        st.error(f"Error reading CSV file {filepath}: {e}")
-        return
 
 # Configure page
 st.set_page_config(
@@ -90,57 +75,26 @@ def load_datasets_optimized():
     
     status_text.text(f"🔄 Loading datasets...")
     
-    # Use chunked loading for large datasets
-    use_chunked_loading = True
-    
     try:
-        if use_chunked_loading:
-            # Load market data (smaller file) normally
-            progress_bar.progress(0.1)
-            status_text.text("📊 Loading market data...")
-            crawled_result_df = pd.read_csv('dark_market_output_v2.csv', 
-                                          encoding='latin-1', 
-                                          on_bad_lines='skip', 
-                                          engine='c',  # Faster than 'python'
-                                          low_memory=False)
-            
-            # Load forum data in chunks
-            progress_bar.progress(0.3)
-            status_text.text("💬 Loading forum data...")
-            
-            forum_chunks = []
-            chunk_count = 0
-            for chunk in memory_efficient_read_csv('Clearnedup_ALL_7.csv', 
-                                                   chunk_size=CHUNK_SIZE):
-                forum_chunks.append(chunk)
-                chunk_count += 1
-                progress_bar.progress(0.3 + (chunk_count / 20) * 0.4)
-            if forum_chunks:
-                progress_bar.progress(0.8)
-                status_text.text("🔄 Combining forum data...")
-                preprocessed_forum_df = pd.concat(forum_chunks, ignore_index=True)
-                del forum_chunks  # Free memory
-                gc.collect()
-            else:
-                st.error("❌ Failed to load forum data")
-                return None, None
-        else:
-            # Standard loading for systems with sufficient memory
-            progress_bar.progress(0.2)
-            status_text.text("📊 Loading market data...")
-            crawled_result_df = pd.read_csv('dark_market_output_v2.csv', 
+        # Load market data
+        progress_bar.progress(0.2)
+        status_text.text("📊 Loading market data...")
+        crawled_result_df = pd.read_csv('dark_market_output_v2.csv', 
+                                      encoding='latin-1', 
+                                      on_bad_lines='skip', 
+                                      engine='c',
+                                      low_memory=False)
+        
+        # Load forum data
+        progress_bar.progress(0.6)
+        status_text.text("💬 Loading all forum data (this may take a moment)...")
+        preprocessed_forum_df = pd.read_csv('Clearnedup_ALL_7.csv', 
                                           encoding='latin-1', 
                                           on_bad_lines='skip', 
                                           engine='c',
                                           low_memory=False)
-            
-            progress_bar.progress(0.6)
-            status_text.text("💬 Loading forum data...")
-            preprocessed_forum_df = pd.read_csv('Clearnedup_ALL_7.csv', 
-                                              encoding='latin-1', 
-                                              on_bad_lines='skip', 
-                                              engine='c',
-                                              low_memory=False)
+        
+        gc.collect()
         
         progress_bar.progress(1.0)
         status_text.text(f"✅ Datasets loaded! Market: {len(crawled_result_df):,}, Forum: {len(preprocessed_forum_df):,}")
@@ -166,14 +120,14 @@ def load_or_process_data(threat_keywords):
         with open(forum_pkl_path, 'rb') as f:
             preprocessed_forum_df = pickle.load(f)
         st.success("Loaded pre-processed data from cache.")
-        return crawled_result_df, preprocessed_forum_df
     except (FileNotFoundError, EOFError, pickle.UnpicklingError):
-        st.info("📂 Processing fresh data...")
+        st.info("📂 No cache found, processing fresh data...")
         crawled_result_df, preprocessed_forum_df = load_datasets_optimized()
         
         if crawled_result_df is None or preprocessed_forum_df is None:
             return None, None
 
+        # Always run preprocessing
         crawled_result_df, preprocessed_forum_df = preprocess_data_full(crawled_result_df, preprocessed_forum_df, threat_keywords)
         
         with open(crawled_pkl_path, 'wb') as f:
@@ -182,7 +136,12 @@ def load_or_process_data(threat_keywords):
             pickle.dump(preprocessed_forum_df, f)
             
         st.success("Data processed and cached successfully.")
-        return crawled_result_df, preprocessed_forum_df
+
+    # Ensure threat columns are always present
+    if crawled_result_df is not None and preprocessed_forum_df is not None:
+        crawled_result_df, preprocessed_forum_df = preprocess_data_full(crawled_result_df, preprocessed_forum_df, threat_keywords)
+
+    return crawled_result_df, preprocessed_forum_df
 
 @st.cache_data(ttl=CACHE_TTL)
 def preprocess_data_full(crawled_result_df, preprocessed_forum_df, threat_keywords):
@@ -255,40 +214,23 @@ def process_market_data(df, compiled_regexes):
 
 @st.cache_data
 def process_forum_data(df, compiled_regexes):
-    """Process forum data efficiently with chunking for large datasets."""
+    """Process forum data efficiently."""
     df = df.copy()
     df['Post Content'] = df['Post Content'].fillna('')
     df['Thread Title'] = df['Thread Title'].fillna('')
     df['datetime'] = pd.to_datetime(df['datetime'], errors='coerce')
     df['combined_text'] = (df['Thread Title'].astype(str) + ' ' + df['Post Content'].astype(str)).str.lower()
 
-    # Process in chunks for large datasets
-    chunk_size = 100000
-    if len(df) > chunk_size:
-        st.info(f"Processing large dataset in chunks of {chunk_size:,}...")
-        chunks = []
-        for i in range(0, len(df), chunk_size):
-            chunk = df.iloc[i:i+chunk_size].copy()
-            chunk = process_forum_chunk(chunk, compiled_regexes)
-            chunks.append(chunk)
-            st.progress((i + chunk_size) / len(df))
-        df = pd.concat(chunks, ignore_index=True)
-    else:
-        df = process_forum_chunk(df, compiled_regexes)
+    # Vectorized threat detection
+    for category, regex in compiled_regexes.items():
+        df[category] = df['combined_text'].str.contains(regex, na=False)
+    
+    # Efficient sentiment analysis
+    df['sentiment'] = compute_sentiment_efficient(df['combined_text'])
     
     return df
 
-@st.cache_data
-def process_forum_chunk(chunk, compiled_regexes):
-    """Process a chunk of forum data."""
-    # Vectorized threat detection
-    for category, regex in compiled_regexes.items():
-        chunk[category] = chunk['combined_text'].str.contains(regex, na=False)
-    
-    # Efficient sentiment analysis
-    chunk['sentiment'] = compute_sentiment_efficient(chunk['combined_text'])
-    
-    return chunk
+
 
 @st.cache_data(ttl=CACHE_TTL)
 def compute_sentiment_efficient(text_series, sample_size=None):
