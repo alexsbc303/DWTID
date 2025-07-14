@@ -110,20 +110,11 @@ def load_datasets_optimized():
             
             forum_chunks = []
             chunk_count = 0
-            max_chunks = 10  # Limit to control memory usage
-            
             for chunk in memory_efficient_read_csv('Clearnedup_ALL_7.csv', 
                                                    chunk_size=CHUNK_SIZE):
-                if chunk_count >= max_chunks:
-                    break
                 forum_chunks.append(chunk)
                 chunk_count += 1
-                progress_bar.progress(0.3 + (chunk_count / max_chunks) * 0.4)
-                
-                # Limit chunks to prevent memory issues
-                if chunk_count >= max_chunks:
-                    break
-            
+                progress_bar.progress(0.3 + (chunk_count / 20) * 0.4)
             if forum_chunks:
                 progress_bar.progress(0.8)
                 status_text.text("🔄 Combining forum data...")
