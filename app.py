@@ -36,7 +36,7 @@ CACHE_TTL = 3600  # 1 hour
 
 # Configure page
 st.set_page_config(
-    page_title="Dark Web Threat Intelligence Research Dashboard",
+    page_title="Dark Web Threat Intelligence Dashboard (DWTID)",
     page_icon="🔒",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -317,8 +317,8 @@ def create_network_graph(df, column1, column2, limit=20):
     return G
 
 def main():
-    st.title("🔒 Dark Web Threat Intelligence Dashboard")
-    st.markdown("### MSP24021")
+    st.title("🔒 Dark Web Threat Intelligence Dashboard (DWTID)")
+    st.markdown("### COMP7705 MSc(CompSc) Project 2024 - The Dark Web and its role in Cybercrime (MSP24021)")
     
     # Load data with clean UI
     threat_keywords = load_threat_keywords()
@@ -351,7 +351,7 @@ def main():
         show_crawled_result_analysis(crawled_result_df)
         
         # Enhanced Market Listing Topics Analysis
-        st.header("📊 Market Listing Topics Analysis")
+        st.header("📊 Marketplace Content Analysis")
         
         # Always show meaningful keyword analysis first
         show_meaningful_keyword_analysis(crawled_result_df, "Market Keywords & Threat Intelligence")
@@ -371,10 +371,10 @@ def main():
         show_forum_analysis(preprocessed_forum_df)
         
         # Enhanced Forum Discussion Topics Analysis
-        st.header("💬 Forum Discussion Topics Analysis")
+        st.header("💬 Forum Content Analysis")
         
         # Always show meaningful keyword analysis first
-        show_meaningful_keyword_analysis(preprocessed_forum_df, "Forum Keywords & Discussion Intelligence")
+        show_meaningful_keyword_analysis(preprocessed_forum_df, "Forum Keywords & Communication Patterns")
         
         # Then show topic modeling if available
         if GENSIM_AVAILABLE:
@@ -411,20 +411,20 @@ def show_overview(df, dataset_type):
 
 def show_threat_analysis(df, threat_categories):
     """Show threat detection analysis"""
-    st.header("🚨 Threat Analysis")
+    st.header("🚨 Security Risk Analysis")
     
     threat_df = df[df[threat_categories].any(axis=1)]
     
     if not threat_df.empty:
         # Threat distribution chart
         threat_counts = threat_df[threat_categories].sum().sort_values(ascending=False)
-        fig = px.bar(threat_counts, x=threat_counts.index, y=threat_counts.values, title='Detected Threat Categories')
+        fig = px.bar(threat_counts, x=threat_counts.index, y=threat_counts.values, title='Security Risk Categories')
         st.plotly_chart(fig, use_container_width=True)
 
         if 'datetime' in threat_df.columns:
             st.subheader("Threat Mentions Over Time")
             threat_temporal = threat_df.set_index('datetime').resample('M')[threat_categories].sum()
-            fig = px.line(threat_temporal, x=threat_temporal.index, y=threat_temporal.columns, title='Threat Mentions per Month')
+            fig = px.line(threat_temporal, x=threat_temporal.index, y=threat_temporal.columns, title='Monthly Security Risk Indicators')
             st.plotly_chart(fig, use_container_width=True)
 
         st.subheader("🔍 Advanced Threat Filtering")
@@ -434,7 +434,7 @@ def show_threat_analysis(df, threat_categories):
         
         with col1:
             selected_threats = st.multiselect(
-                "Filter by Threat Type", 
+                "Filter by Security Risk Type", 
                 options=threat_categories,
                 help="Select one or more threat types to filter the results"
             )
@@ -616,7 +616,7 @@ def show_forum_analysis(forum_df):
     col3, col4 = st.columns(2)
     
     with col3:
-        st.subheader("📈 Temporal Analysis")
+        st.subheader("Temporal Analysis")
         if 'datetime' in forum_df.columns:
             valid_dates = forum_df[forum_df['datetime'].notna()].copy()
             if len(valid_dates) > 0:
@@ -631,7 +631,7 @@ def show_forum_analysis(forum_df):
             st.info("Datetime column not available for temporal analysis.")
     
     with col4:
-        st.subheader("😊 Sentiment Analysis")
+        st.subheader("Sentiment Analysis")
         if 'sentiment' in forum_df.columns:
             sentiment_counts = forum_df['sentiment'].apply(lambda p: 'positive' if p > 0.1 else ('negative' if p < -0.1 else 'neutral')).value_counts()
             fig = px.pie(values=sentiment_counts.values, names=sentiment_counts.index, title='Sentiment of Forum Posts')
@@ -1175,7 +1175,7 @@ def show_educational_content(threat_keywords):
                     st.text(all_keywords)
     
     with col2:
-        st.markdown("### ⚠️ Warning Signs & Security Precautions")
+        st.markdown("### ⚠️ Security Warning Signs & Best Practices")
         
         st.markdown("**Warning Signs of Dark Web Threats:**")
         warning_signs = [
@@ -1231,7 +1231,7 @@ def show_trending_threats(crawled_df, threat_keywords):
 
 def show_alert_simulation(crawled_df, forum_df, threat_keywords):
     """Simulate alerts based on random trending posts for education purposes."""
-    st.subheader("🚨 Live Threat Alerts (Simulation from Crawled Data)")
+    st.subheader("🚨 Live Security Alerts (Simulation from Data)")
     
     if crawled_df is not None and not crawled_df.empty:
         threat_categories = list(threat_keywords.keys()) if threat_keywords else []
