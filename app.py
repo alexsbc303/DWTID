@@ -127,7 +127,7 @@ def load_or_process_data(threat_keywords):
         if crawled_result_df is None or preprocessed_forum_df is None:
             return None, None
 
-        # Always run preprocessing
+        # Process the data since it's not cached
         crawled_result_df, preprocessed_forum_df = preprocess_data_full(crawled_result_df, preprocessed_forum_df, threat_keywords)
         
         with open(crawled_pkl_path, 'wb') as f:
@@ -136,10 +136,6 @@ def load_or_process_data(threat_keywords):
             pickle.dump(preprocessed_forum_df, f)
             
         st.success("Data processed and cached successfully.")
-
-    # Ensure threat columns are always present
-    if crawled_result_df is not None and preprocessed_forum_df is not None:
-        crawled_result_df, preprocessed_forum_df = preprocess_data_full(crawled_result_df, preprocessed_forum_df, threat_keywords)
 
     return crawled_result_df, preprocessed_forum_df
 
@@ -538,7 +534,7 @@ def show_threat_analysis(df, threat_categories):
             st.info("No data matches the selected filters.")
 
         # Word cloud section with button
-        st.subheader("📊 Threat Word Cloud")
+        st.subheader("📊 Threat Word Cloud (Warning: Please filter to below 10000 results before generating Word Cloud)")
         if st.button("🔄 Generate Word Cloud", help="Click to generate word cloud from filtered threat data"):
             text_content = ' '.join(filtered_df['combined_text'].dropna())
             if text_content and len(text_content.strip()) > 0:
@@ -680,12 +676,12 @@ def show_network_analysis(df, source_col, target_col):
             node_text.append(f"{node} (Degree: {G.degree(node)})")
             node_size.append(G.degree(node) * 5 + 10)
 
-        node_trace = go.Scatter(x=node_x, y=node_y, mode='markers', hoverinfo='text', text=node_text, marker=dict(showscale=True, colorscale='YlGnBu', reversescale=True, color=[], size=node_size, colorbar=dict(thickness=15, title='Node Connections', xanchor='left', titleside='right'), line_width=2))
+        node_trace = go.Scatter(x=node_x, y=node_y, mode='markers', hoverinfo='text', text=node_text, marker=dict(showscale=True, colorscale='YlGnBu', reversescale=True, color=[], size=node_size, colorbar=dict(thickness=15, title='Node Connections', xanchor='left'), line_width=2))
         
         node_adjacencies = [len(adj[1]) for adj in G.adjacency()]
         node_trace.marker.color = node_adjacencies
 
-        fig = go.Figure(data=[edge_trace, node_trace], layout=go.Layout(title=f'<br>{source_col}-{target_col} Network', titlefont_size=16, showlegend=False, hovermode='closest', margin=dict(b=20,l=5,r=5,t=40), annotations=[dict(text=f"Network graph showing connections between {source_col} and {target_col}", showarrow=False, xref="paper", yref="paper", x=0.005, y=-0.002)], xaxis=dict(showgrid=False, zeroline=False, showticklabels=False), yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+        fig = go.Figure(data=[edge_trace, node_trace], layout=go.Layout(title=dict(text=f'<br>{source_col}-{target_col} Network', font=dict(size=16)), showlegend=False, hovermode='closest', margin=dict(b=20,l=5,r=5,t=40), annotations=[dict(text=f"Network graph showing connections between {source_col} and {target_col}", showarrow=False, xref="paper", yref="paper", x=0.005, y=-0.002)], xaxis=dict(showgrid=False, zeroline=False, showticklabels=False), yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
         st.plotly_chart(fig, use_container_width=True)
 
 def prepare_classification_data(df: pd.DataFrame, threat_categories: list) -> tuple[pd.DataFrame, pd.Series]:
@@ -695,7 +691,7 @@ def prepare_classification_data(df: pd.DataFrame, threat_categories: list) -> tu
 
 def show_ml_classification(df: pd.DataFrame, threat_categories: list) -> None:
     """Show ML classification analysis with automatic training and results."""
-    st.header("🤖 Machine Learning Classification")
+    st.header("🤖 Machine Learning Classification (Takes long time for Preprocessed Forum Dataset)")
     st.subheader("Threat Classification Results")
     
     with st.spinner("Training and evaluating classification model..."):
