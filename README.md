@@ -30,6 +30,7 @@ Data Collection → Processing → Analysis → Intelligence → Dissemination
 - **Data Sources**: 
   - `dark_market_output_v2.csv` - Dark market listings (80K+ records) [in Github repo]
   - `Clearnedup_ALL_7.csv` - Forum discussions (5.8M+ records) [Link: https://drive.google.com/file/d/1U7UV7RhE7gDSZC5xe7XaUifetwlZlu2I/view?usp=sharing]
+  - Reference data source: https://github.com/gayanku/darkweb_clearweb_darktopics
 
 ## 🚀 Quick Start
 
