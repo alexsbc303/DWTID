@@ -1,4 +1,4 @@
-# Dark Web Threat Intelligence Analysis (DWTIA) Dashboard
+# Dark Web Threat Intelligence Dashboard (DWTID) 
 
 A comprehensive cybersecurity research prototype for monitoring and analyzing dark web threats through advanced data analytics and machine learning techniques.
 
